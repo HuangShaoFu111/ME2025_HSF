@@ -164,22 +164,42 @@ nav a:hover, nav .dropbtn:hover {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.fact a {
-    text-decoration: none;
-    color: inherit;
+.fact:hover {
+    transform: scale(1.05); /* Increase size when hovered */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Shadow effect */
 }
 
+/* Image inside .fact */
 .fact-img {
     width: 100%;
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 15px;
+    transition: transform 0.3s ease;
 }
 
+.fact:hover .fact-img {
+    transform: scale(1.1); /* Image zoom effect */
+}
+
+/* Text color change on hover */
 .fact p {
     font-size: 1.1em;
     color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.fact:hover p {
+    color: #3498db; /* Text color changes on hover */
+}
+
+/* Fact link */
+.fact a {
+    text-decoration: none;
+    color: inherit;
 }
