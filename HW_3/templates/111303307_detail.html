@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學號_詳細資料</title>
+    <link rel="stylesheet" href="../static/css/學號_css.css">
+</head>
+<body>
+    <h1>學號_詳細資料</h1>
+    <video width="320" height="240" controls>
+        <source src="../static/img/sample_video.mp4" type="video/mp4">
+        你的瀏覽器不支援影片標籤。
+    </video>
+    <ul>
+        <li>這是我的詳細介紹。</li>
+        <li>我喜歡看電影和旅遊。</li>
+        <li>我有三年的編程經驗。</li>
+    </ul>
+
+    <form action="學號_index.html" method="GET">
+        <label for="feedback">請留下你的回饋：</label><br><br>
+
+        <label for="dropdown">選擇一個選項：</label>
+        <select name="dropdown" id="dropdown">
+            <option value="option1">選項1</option>
+            <option value="option2">選項2</option>
+        </select><br><br>
+
+        <label>選擇性別：</label>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">男</label>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">女</label><br><br>
+
+        <label>喜好：</label>
+        <input type="checkbox" id="movies" name="hobbies" value="movies">
+        <label for="movies">看電影</label>
+        <input type="checkbox" id="sports" name="hobbies" value="sports">
+        <label for="sports">運動</label><br><br>
+
+        <label for="name">你的名字：</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <button type="submit">提交</button>
+    </form>
+</body>
+</html>
