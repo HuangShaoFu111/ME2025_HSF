@@ -88,38 +88,68 @@ input[type="radio"], input[type="checkbox"] {
     margin-right: 10px;
 }
 
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* Navigation */
 nav {
     background-color: #2c3e50;
-    padding: 10px;
+    padding: 15px;
     text-align: left;
     display: flex;
-    justify-content: left;
+    justify-content: flex-start;
     align-items: center;
+    position: relative;
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
+/* Hover effect for entire nav bar */
+nav:hover {
+    background-color: #34495e; /* Darker background when hovering over nav */
+}
+
+/* Navigation links */
 nav a {
     color: #fff;
     text-decoration: none;
     padding: 10px 15px;
     font-size: 1.1em;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transitions for hover effects */
 }
 
+nav a:hover {
+    background-color: #2980b9;
+    transform: scale(1.1); /* Slight zoom-in effect */
+}
+
+/* Dropdown menu */
 nav .dropdown {
     display: inline-block;
     position: relative;
+    margin-left: 30px; /* Space between navigation items */
 }
 
 nav .dropdown .dropbtn {
     background-color: #2c3e50;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 12px 20px;
     cursor: pointer;
     font-size: 1.1em;
-    margin-left: 20px; /* Adjust spacing between "關於我們" and "連結" */
+    border-radius: 5px; /* Rounded corners for a smoother look */
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+nav .dropdown .dropbtn:hover {
+    background-color: #2980b9;
+    transform: scale(1.1); /* Zoom in effect on hover */
+}
+
+/* Dropdown content */
 nav .dropdown-content {
     display: none;
     position: absolute;
@@ -127,25 +157,34 @@ nav .dropdown-content {
     min-width: 160px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for showing */
 }
 
 nav .dropdown:hover .dropdown-content {
     display: block;
+    opacity: 1;
+    visibility: visible; /* Fade in effect when dropdown is shown */
 }
 
+/* Dropdown links */
 nav .dropdown-content a {
     color: #fff;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 nav .dropdown-content a:hover {
     background-color: #2980b9;
+    transform: translateX(10px); /* Slide effect when hovering over dropdown items */
 }
 
-/* Hover effect for links */
-nav a:hover, nav .dropbtn:hover {
+/* Hover effect for navigation links */
+nav .dropdown-content a:hover {
     background-color: #2980b9;
 }
 
