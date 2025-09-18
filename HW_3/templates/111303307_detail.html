@@ -3,46 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>學號_詳細資料</title>
-    <link rel="stylesheet" href="../static/css/學號_css.css">
+    <title>111303307_Taylor Swift</title>
+    <link rel="stylesheet" href="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\css\111303307_css.css">
 </head>
 <body>
-    <h1>學號_詳細資料</h1>
-    <video width="320" height="240" controls>
-        <source src="../static/img/sample_video.mp4" type="video/mp4">
-        你的瀏覽器不支援影片標籤。
-    </video>
-    <ul>
-        <li>這是我的詳細介紹。</li>
-        <li>我喜歡看電影和旅遊。</li>
-        <li>我有三年的編程經驗。</li>
-    </ul>
+    <h1>ShaoFu</h1>
 
-    <form action="學號_index.html" method="GET">
-        <label for="feedback">請留下你的回饋：</label><br><br>
+    <div class="detail-container">
+        <div class="detail-left">
+            <img src="../static/img/taylorswift.jpg" alt="Taylor Swift" class="detail-img">
+            <p><strong>出生日期：</strong>1989年12月13日</p>
+            <p><strong>音樂類型：</strong>流行、鄉村、搖滾</p>
+            <p><strong>代表作：</strong>《Love Story》、《Blank Space》、《Shake It Off</p>
+        </div>
+        
+        <div class="detail-right">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/9t-uGR55Ijo" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <label for="dropdown">選擇一個選項：</label>
-        <select name="dropdown" id="dropdown">
-            <option value="option1">選項1</option>
-            <option value="option2">選項2</option>
-        </select><br><br>
+    <form action="111303307_index.html" method="GET">
+        <h2>回饋表單</h2>
+        
+        <label for="name">姓名：</label>
+        <input type="text" id="name" name="name"><br><br>
 
-        <label>選擇性別：</label>
-        <input type="radio" id="male" name="gender" value="male">
-        <label for="male">男</label>
-        <input type="radio" id="female" name="gender" value="female">
-        <label for="female">女</label><br><br>
+        <label>你是怎麼知道這個網站的？</label><br>
+        <input type="radio" id="friend" name="source" value="friend">
+        <label for="friend">朋友推薦</label>
+        <input type="radio" id="search" name="source" value="search">
+        <label for="search">搜尋引擎</label><br><br>
 
-        <label>喜好：</label>
-        <input type="checkbox" id="movies" name="hobbies" value="movies">
-        <label for="movies">看電影</label>
-        <input type="checkbox" id="sports" name="hobbies" value="sports">
-        <label for="sports">運動</label><br><br>
+        <label>你最喜歡的活動是：</label><br>
+        <input type="checkbox" id="sports" name="activity" value="sports">
+        <label for="sports">運動</label>
+        <input type="checkbox" id="music" name="activity" value="music">
+        <label for="music">音樂</label>
+        <input type="checkbox" id="reading" name="activity" value="reading">
+        <label for="reading">閱讀</label><br><br>
 
-        <label for="name">你的名字：</label>
-        <input type="text" id="name" name="name" required><br><br>
+        <label for="profession">你平常喜歡的職業類型（可複選）：</label><br>
+        <input type="checkbox" id="doctor" name="profession" value="doctor">
+        <label for="doctor">醫生</label>
+        <input type="checkbox" id="artist" name="profession" value="artist">
+        <label for="artist">藝術家</label>
+        <input type="checkbox" id="teacher" name="profession" value="teacher">
+        <label for="teacher">教師</label><br><br>
 
-        <button type="submit">提交</button>
+        <label for="comments">備註：</label><br>
+        <textarea id="comments" name="comments"></textarea><br><br>
+
+        <button type="submit">提交意見</button>
     </form>
 </body>
 </html>
