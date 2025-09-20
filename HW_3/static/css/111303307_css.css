@@ -305,7 +305,7 @@ nav .dropdown-content a:hover {
 
 .portfolio .tile:hover img,
 .portfolio .tile:focus-visible img {
-  transform: scale(1.04); /* 柔和 4% 放大 */
+  transform: scale(1.04); 
 }
 
 .portfolio .tile:hover::after,
