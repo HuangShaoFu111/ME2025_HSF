@@ -29,10 +29,24 @@ body {
 h1 {
     text-align: center;
     font-size: 2.5em;
-    color: #2c3e50;
-    margin-bottom: 20px;
+    color: #ffffff;
+    margin-bottom: 40px;
 }
 
+h2 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #ffffff;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+h3 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #1f287a;
+    margin-bottom: 20px;
+}
 /* Detail Container */
 .detail-container {
     display: flex;
@@ -62,7 +76,7 @@ form {
 form h2 {
     margin-bottom: 20px;
     font-size: 1.8em;
-    color: #2c3e50;
+    color: #2b406d;
 }
 
 label {
