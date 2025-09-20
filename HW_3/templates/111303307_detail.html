@@ -34,11 +34,12 @@
         <input type="text" id="name" name="name"><br><br>
 
         <!-- 如何知道網站 -->
-        <label>你是如何知道這個網站的？</label><br>
-        <input type="radio" id="friend" name="source" value="friend">
-        <label for="friend">朋友推薦</label>
-        <input type="radio" id="search" name="source" value="search">
-        <label for="search">搜尋引擎</label><br><br>
+        <label for="source">你是如何知道這個網站的？</label><br>
+        <select id="source" name="source">
+          <option value="" selected disabled>請選擇</option>
+          <option value="friend">朋友推薦</option>
+          <option value="search">搜尋引擎</option>
+        </select><br><br>
 
         <!-- 喜愛活動 -->
         <label>你最喜歡的活動是：</label><br>
