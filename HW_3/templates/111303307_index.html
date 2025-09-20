@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>111303307_黃紹輔</title>
     <!-- 使用相對路徑來引入CSS -->
-    <link rel="stylesheet" href="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\css\111303307_css.css">
+    <link rel="stylesheet" href="..\static\css\111303307_css.css">
 </head>
 <body>
-     <img class="bg-fixed" src="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\img\img5.jpg" alt="" aria-hidden="true">
+     <img class="bg-fixed" src="..\static\img\img5.jpg" alt="" aria-hidden="true">
     <!-- 導航列 -->
     <nav>
         <a href="#aboutus">關於我們</a>
@@ -27,23 +27,84 @@
     <div class="fact-container">
         <div class="fact">
             <!-- 包裹圖片和文字的 <a> 標籤，用來實現超連結 -->
-            <a href="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\templates\111303307_detail.html">
-                <img src="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\img\img1.jpg" alt="Looks" class="fact-img">
+            <a href=".\111303307_detail.html">
+                <img src="..\static\img\img1.jpg" alt="Looks" class="fact-img">
                 <p>Looks: Amiable</p>
             </a>
         </div>
         <div class="fact">
-            <a href="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\templates\111303307_detail.html">
-                <img src="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\img\img2.jpg" alt="Photography" class="fact-img">
+            <a href=".\111303307_detail.html">
+                <img src="..\static\img\img2.jpg" alt="Photography" class="fact-img">
                 <p>Habbits: Photography</p>
             </a>
         </div>
         <div class="fact">
-            <a href="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\templates\111303307_detail.html">
-                <img src="C:\Users\User\Desktop\中央可憐蟲\大四上\電腦網路與程式\ME2025_HSF\HW_3\static\img\img3.jpg" alt="Burger" class="fact-img">
+            <a href=".\111303307_detail.html">
+                <img src="..\static\img\img3.jpg" alt="Burger" class="fact-img">
                 <p>Favorite Food: Burger</p>
             </a>
         </div>
     </div>
+
+    <!-- 攝影作品集（純 HTML + CSS） -->
+    <section id="portfolio" class="portfolio">
+    <h2>Photography Portfolio</h2>
+
+    <div class="grid">
+        <!-- 縮圖連到 #imgx，觸發 :target 放大 -->
+        <a class="tile" href="#img1">
+        <img src="../static/img/p1.jpg" alt="商業大樓 #1">
+        </a>
+        <a class="tile" href="#img2">
+        <img src="../static/img/p2.jpg" alt="城市光影 #2">
+        </a>
+        <a class="tile" href="#img3">
+        <img src="../static/img/p3.jpg" alt="海邊日落 #3">
+        </a>
+        <a class="tile" href="#img4">
+        <img src="../static/img/p4.jpg" alt="九份老街 #4">
+        </a>
+        <a class="tile" href="#img5">
+        <img src="../static/img/p5.jpg" alt="觀音沙洲 #5">
+        </a>
+        <a class="tile" href="#img6">
+        <img src="../static/img/p6.jpg" alt="涉谷街拍 #6">
+        </a>
+        
+        
+    </div>
+    </section>
+
+    <!-- CSS-only Lightbox：利用 :target 顯示 -->
+    <div class="lightbox" id="img1" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p1.jpg" alt="商業大樓 #1">
+    </div>
+
+    <div class="lightbox" id="img2" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p2.jpg" alt="城市光影 #2">
+    </div>
+
+    <div class="lightbox" id="img3" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p3.jpg" alt="海邊日落 #3">
+    </div>
+
+    <div class="lightbox" id="img4" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p4.jpg" alt="九份老街 #4">
+    </div>
+
+    <div class="lightbox" id="img5" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p5.jpg" alt="觀音沙洲 #5">
+    </div>
+
+    <div class="lightbox" id="img6" aria-hidden="true">
+    <a class="close" href="#portfolio" aria-label="關閉"></a>
+    <img src="../static/img/p6.jpg" alt="涉谷街拍 #6">
+    </div>
+
 </body>
 </html>
