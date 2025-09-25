@@ -9,4 +9,10 @@
   const $ = (sel) => document.querySelector(sel);
   const input = $("#guessInput");
   const btn = $("#guessBtn");
+
+  btn.addEventListener("click", tryGuess);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") tryGuess();
+  });
+
   })();
