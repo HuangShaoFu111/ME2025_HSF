@@ -38,12 +38,10 @@ document.write('<div style="display:grid; grid-template-columns: repeat(3, 1fr);
 for (let i = 0; i <= 9; i++) {
   document.write(`<button style="padding:8px; font-size:18px;" onclick="appAppend('${i}')">${i}</button>`);
 }
+// clear
+document.write('<button style="padding:8px; font-size:18px;width:100%; grid-column: 2 / span 2; " onclick="appClear()">clear</button>');
 document.write('</div>');
 
-// clear
-document.write('<div style="margin-bottom:8px;">');
-document.write('<button style="padding:8px; font-size:18px; width:100%;" onclick="appClear()">clear</button>');
-document.write('</div>');
 
 // 符號列：「+ - * / ( ) =」
 const ops = ["+", "-", "*", "/", "(", ")", "="];
