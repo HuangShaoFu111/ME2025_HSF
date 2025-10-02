@@ -39,10 +39,9 @@
       alert(`猜中了！共猜了 ${attempts} 次，花了 ${secs.toFixed(2)} 秒。`);
 
       // 寫入歷史紀錄
-      historyEl.insertAdjacentHTML(
-        "beforeend",
-        `<li>${historyEl.children.length + 1}. 猜了 ${attempts} 次，耗時 ${secs.toFixed(2)} 秒　${new Date().toLocaleTimeString()}</li>`
-      );
+      const li = document.createElement("li");
+      li.textContent = `猜了 ${attempts} 次，耗時 ${secs.toFixed(2)} 秒　${new Date().toLocaleTimeString()}`;
+      historyEl.appendChild(li);
 
       // 重置下一題
       answer = newAnswer();
