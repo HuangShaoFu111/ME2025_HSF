@@ -6,29 +6,50 @@
   let answer = newAnswer();
   let attempts = 0;
 
+  const helper = document.querySelector("#helper");
   const $ = (sel) => document.querySelector(sel);
   const input = $("#guessInput");
   const btn = $("#guessBtn");
 
+  let startTs = 0;                         // 第一次作答的時間戳
+  const timerEl = document.getElementById("timer");
+  const historyEl = document.getElementById("history");
+
   function tryGuess() {
     const val = input.value.trim();
 
-    if (val === "") { alert("請先輸入數字！"); return; }
-    if (!/^\d+$/.test(val)) { alert("請輸入 0~100 的整數！"); return; }
+    if (val === "") {helper.textContent = "請先輸入數字！"; return; }
+    if (!/^\d+$/.test(val)) { helper.textContent = "請輸入 0~100 的整數！"; return; }
 
     const n = Number(val);
-    if (n < 0 || n > 100) { alert("範圍錯誤：請輸入 0~100 的整數！"); return; }
-
+    if (n < 0 || n > 100) { helper.textContent = "範圍錯誤：請輸入 0~100 的整數！"; return; }
+    if (attempts === 0 && startTs === 0) startTs = Date.now();
+    if (startTs) {
+      const secs = (Date.now() - startTs) / 1000;
+      timerEl.textContent = `時間：${secs.toFixed(2)} s`;
+    }
     attempts += 1;
 
     if (n > answer) {
-      alert("太大了，請再試一次。");
+      helper.textContent = "太大了，請再試一次。";;
     } else if (n < answer) {
-      alert("太小了，請再試一次。");
+      helper.textContent = "太小了，請再試一次。";
     } else {
-      alert(`恭喜你，猜對了！你總共猜了 ${attempts} 次。`);
+      const secs = (Date.now() - startTs) / 1000;
+      alert(`猜中了！共猜了 ${attempts} 次，花了 ${secs.toFixed(2)} 秒。`);
+
+      // 寫入歷史紀錄
+      historyEl.insertAdjacentHTML(
+        "beforeend",
+        `<li>${historyEl.children.length + 1}. 猜了 ${attempts} 次，耗時 ${secs.toFixed(2)} 秒　${new Date().toLocaleTimeString()}</li>`
+      );
+
+      // 重置下一題
       answer = newAnswer();
       attempts = 0;
+      startTs = 0;
+      timerEl.textContent = "時間：0.00 s";
+      helper.textContent = "";   // 你的提示區：把「太大/太小」寫在這裡
       input.value = "";
     }
     input.focus();
