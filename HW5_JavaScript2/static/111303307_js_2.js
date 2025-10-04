@@ -75,3 +75,52 @@ document.querySelectorAll(".minus").forEach(btn => {
 
 // 初始計算
 updateTotal();
+
+// 結帳按鈕
+document.getElementById("checkout").addEventListener("click", function() {
+  let total = parseInt(document.getElementById("total").textContent);
+  if (total <= 0) {
+    alert("尚未選擇商品");
+    return;
+  }
+
+  let summary = "購買明細：\n";
+  document.querySelectorAll("tbody tr").forEach(row => {
+    const check = row.querySelector(".item-check");
+    if (check.checked) {
+      const name = row.cells[1].textContent;
+      const qtyInput = row.querySelector(".qty");
+      const qty = parseInt(qtyInput.value);
+      const price = parseInt(row.querySelector(".price").textContent);
+      const subtotal = qty * price;
+
+      // 扣庫存
+      let stockCell = row.querySelector(".stock");
+      let stock = parseInt(stockCell.textContent);
+      stockCell.textContent = stock - qty;
+
+      // 更新 max 屬性
+      qtyInput.max = stock - qty;
+
+      // 更新摘要
+      summary += `${name} x ${qty} = ${subtotal}\n`;
+
+      // 重設狀態
+      check.checked = false;
+      if (stock - qty > 0) {
+        qtyInput.value = 1;
+      } else {
+        qtyInput.value = 0;
+      }
+    }
+  });
+
+  alert(summary + `\n總金額：${total}`);
+
+  // 全選框取消
+  document.getElementById("checkAll").checked = false;
+
+  // 更新金額
+  updateTotal();
+});
+
