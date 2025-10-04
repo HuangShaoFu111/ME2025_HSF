@@ -33,3 +33,15 @@ button.minus, button.plus {
   padding: 4px 8px;
   margin: 0 2px;
 }
+
+/* 隱藏 Chrome / Edge / Safari 的 number 小箭頭 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 隱藏 Firefox 的 number 小箭頭 */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
