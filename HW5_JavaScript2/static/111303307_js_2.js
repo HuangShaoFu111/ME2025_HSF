@@ -16,6 +16,7 @@ function updateTotal() {
   });
   document.getElementById("total").textContent = total;
 }
+
 // checkbox 全選
 document.getElementById("checkAll").addEventListener("change", function() {
   const checked = this.checked;
@@ -24,7 +25,8 @@ document.getElementById("checkAll").addEventListener("change", function() {
   });
   updateTotal();
 });
-// 單獨的 checkbox
+
+// 個別 checkbox
 document.querySelectorAll(".item-check").forEach(cb => {
   cb.addEventListener("change", function() {
     const all = document.querySelectorAll(".item-check");
@@ -33,9 +35,43 @@ document.querySelectorAll(".item-check").forEach(cb => {
     updateTotal();
   });
 });
-// 數量輸入變化
+
+// 數量輸入框 → 直接輸入
 document.querySelectorAll(".qty").forEach(input => {
-  input.addEventListener("input", updateTotal);
+  input.addEventListener("input", function() {
+    const stock = parseInt(this.closest("tr").querySelector(".stock").textContent);
+    if (this.value < 1) this.value = 1;
+    if (this.value > stock) this.value = stock;
+    updateTotal();
+  });
 });
+
+// ➕ 按鈕
+document.querySelectorAll(".plus").forEach(btn => {
+  btn.addEventListener("click", function() {
+    const row = this.closest("tr");
+    const qtyInput = row.querySelector(".qty");
+    const stock = parseInt(row.querySelector(".stock").textContent);
+    let qty = parseInt(qtyInput.value);
+    if (qty < stock) {
+      qtyInput.value = qty + 1;
+      updateTotal();
+    }
+  });
+});
+
+// ➖ 按鈕
+document.querySelectorAll(".minus").forEach(btn => {
+  btn.addEventListener("click", function() {
+    const row = this.closest("tr");
+    const qtyInput = row.querySelector(".qty");
+    let qty = parseInt(qtyInput.value);
+    if (qty > 1) {
+      qtyInput.value = qty - 1;
+      updateTotal();
+    }
+  });
+});
+
 // 初始計算
 updateTotal();
