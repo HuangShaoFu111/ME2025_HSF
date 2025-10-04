@@ -100,7 +100,7 @@ document.getElementById("checkout").addEventListener("click", function() {
     return;
   }
 
-  let summary = "購買明細：\n";
+  let summary = "感謝您的購買，您購買的產品如下：\n";
   document.querySelectorAll("tbody tr").forEach(row => {
     const check = row.querySelector(".item-check");
     if (check.checked) {
@@ -131,7 +131,7 @@ document.getElementById("checkout").addEventListener("click", function() {
     }
   });
 
-  alert(summary + `\n總金額：${total}`);
+  alert(summary + `\n總計：$${total}元`);
 
   // 全選框取消
   document.getElementById("checkAll").checked = false;
