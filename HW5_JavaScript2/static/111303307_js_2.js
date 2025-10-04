@@ -3,7 +3,8 @@ function updateTotal() {
   let total = 0;
   document.querySelectorAll("tbody tr").forEach(row => {
     const check = row.querySelector(".item-check");
-    const qty = parseInt(row.querySelector(".qty").value);
+    const rawQty = parseInt(row.querySelector(".qty").value, 10);
+    const qty = isNaN(rawQty) ? 0 : rawQty;  // 非數字視為 0
     const price = parseInt(row.querySelector(".price").textContent);
     const subtotalCell = row.querySelector(".subtotal");
 
@@ -45,6 +46,21 @@ document.querySelectorAll(".qty").forEach(input => {
     updateTotal();
   });
 });
+
+// 數量輸入框 → blur 後做最終校正
+document.querySelectorAll(".qty").forEach(input => {
+  input.addEventListener("blur", function () {
+    const stock = parseInt(this.closest("tr").querySelector(".stock").textContent, 10);
+    let v = parseInt(this.value, 10);
+
+    if (isNaN(v) || v < 1) v = 1;   // 非數字或 <1 → 1
+    if (v > stock) v = stock;       // 超過庫存 → 庫存
+
+    this.value = v;
+    updateTotal();                  // 每次 blur 都重新計算
+  });
+});
+
 
 // ➕ 按鈕
 document.querySelectorAll(".plus").forEach(btn => {
