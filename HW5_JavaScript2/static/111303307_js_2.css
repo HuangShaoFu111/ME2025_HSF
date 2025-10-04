@@ -34,7 +34,7 @@ button.minus, button.plus {
   margin: 0 2px;
 }
 
-/* 隱藏 Chrome / Edge / Safari 的 number 小箭頭 */
+/* 隱藏小箭頭 */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
