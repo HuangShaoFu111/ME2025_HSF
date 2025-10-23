@@ -1,0 +1,25 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>Login | 成績系統 (表單版)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Login</h1>
+  {% if error %}
+    <div class="alert">{{ error }}</div>
+  {% endif %}
+  <form method="post" class="box">
+    <label>Username: <input name="username" autofocus></label><br>
+    <label>Password: <input name="password" type="password"></label><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <p style="margin-top:20px;">
+    這是 <b>HTML 表單版</b>。若想體驗 AJAX 版，請到
+    <a href="{{ url_for('ajax_page') }}">/ajax</a>
+  </p>
+</body>
+</html>

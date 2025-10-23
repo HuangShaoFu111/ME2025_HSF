@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>AJAX 成績系統</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>AJAX 版</h1>
+
+  <div id="loginBox" class="box">
+    <h3>Login</h3>
+    <label>Username: <input id="u"></label>
+    <label>Password: <input id="p" type="password"></label>
+    <button id="btnLogin">Login</button>
+    <div id="loginMsg" class="note"></div>
+  </div>
+
+  <div id="app" style="display:none;">
+    <p>Welcome, <span id="welcomeName"></span>!
+       <a href="/" title="回表單版">回表單版</a></p>
+
+    <div class="box">
+      <h3>新增成績</h3>
+      <label>Name: <input id="name"></label>
+      <label>Student ID: <input id="sid"></label>
+      <label>Score: <input id="score"></label>
+      <button id="btnAdd">Submit</button>
+      <div id="addMsg" class="note"></div>
+    </div>
+
+    <h3>清單</h3>
+    <table class="table" id="tbl">
+      <thead><tr><th>Name</th><th>Student ID</th><th>Score</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

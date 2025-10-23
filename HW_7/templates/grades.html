@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>Grades | 成績系統 (表單版)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="grid">
+    <section>
+      <h1>Grades</h1>
+      <p>Welcome, {{ username }}!　<a href="{{ url_for('logout') }}">Logout</a></p>
+
+      <form method="post" class="box">
+        <label>Name: <input name="name" required></label><br>
+        <label>Student ID: <input name="student_id" required></label><br>
+        <label>Score: <input name="score" required></label><br>
+        <button type="submit">Submit</button>
+      </form>
+
+      {% if msg %}<div class="note">{{ msg }}</div>{% endif %}
+
+      <table class="table">
+        <thead><tr><th>Name</th><th>Student ID</th><th>Score</th></tr></thead>
+        <tbody>
+        {% for r in grades %}
+          <tr><td>{{ r.name }}</td><td>{{ r.student_id }}</td><td>{{ r.score }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <form action="{{ url_for('delete_form') }}" method="post" class="inline">
+        <label>Enter Student ID to delete: <input name="delete_id" required></label>
+        <button type="submit">Delete</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
