@@ -13,18 +13,8 @@ body{
   width:150px;
   height:300px;
   padding:10px;
-}
 
-#products{ flex:1; }
-#products table{
-  width:100%;
-  border-collapse: collapse;
-}
-
-#products table th, #products table td{
-  padding:6px 8px;
-  border-bottom:1px solid #e6e6e6;
-  text-align:center;
+  
 }
 /* TODO:[CSS-WritingPart A End]--------------------- */
 #filter h3{
@@ -56,4 +46,4 @@ img{
   background: #fcefdf;
 }
 
-/* TODO:[CSS-WritingPart B end]--------------------- */
+/* TODO:[CSS-WritingPart B Start]--------------------- */
