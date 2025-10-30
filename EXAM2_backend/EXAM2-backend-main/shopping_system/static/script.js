@@ -13,9 +13,25 @@ const products = [
 ];
 
 
+
 (function showUsername() {
-// === 顯示登入使用者於導行列，補齊程式碼 ===
+ 
+  const span = document.getElementById('user-display');
+  if (span) {
+    const serverText = (span.textContent || '').trim(); 
+    if (!serverText || serverText === 'Guest') {
+      const ls = localStorage.getItem('username');
+      if (ls) span.textContent = ls; 
+    }
+  }
+  const logout = document.getElementById('logout-link');
+  if (logout) {
+    logout.addEventListener('click', () => {
+      localStorage.removeItem('username');
+    });
+  }
 })();
+
 
 
 //以下請自行新增或修改程式碼
@@ -64,6 +80,18 @@ function normalizeImg(url = '') {
   return url.replace(/\/{2,}/g, '/').replace('../static', './static');
 }
 
+function syncRowUI(tr, st) {
+  const input = tr.querySelector('.qty-input');
+  const btnDec = tr.querySelector('.btn-dec');
+  const btnInc = tr.querySelector('.btn-inc');
+  const v = Number(input.value || 0);
+
+  input.disabled = !st.checked;
+  btnInc.disabled = !st.checked;
+  btnDec.disabled = !st.checked || v <= 1;
+}
+
+
 // === 渲染產品表格（含 checkbox、± 數量、單列總金額） ===
 function display_products(products_to_display) {
   const tbody = document.querySelector('#products table tbody');
@@ -72,12 +100,17 @@ function display_products(products_to_display) {
 
   for (let i = 0; i < products_to_display.length; i++) {
     const p = products_to_display[i];
-    const key = `${p.name}-${i}`; // 簡單唯一鍵（也可用 id）
+    const key = `${p.name}-${i}`;
     if (!rowState.has(key)) rowState.set(key, { checked: false, qty: 0 });
 
     const state = rowState.get(key);
     const price = Number(p.price) || 0;
     const total = price * (state.qty || 0);
+
+    // ← 放這裡（state 已有）
+    const decDisabled   = (!state.checked || state.qty <= 1) ? 'disabled' : '';
+    const incDisabled   = (!state.checked) ? 'disabled' : '';
+    const inputDisabled = (!state.checked) ? 'disabled' : '';
 
     const product_info = `
       <tr data-key="${key}">
@@ -89,9 +122,9 @@ function display_products(products_to_display) {
         <td>${p.category}</td>
         <td>
           <div class="qty" style="display:inline-flex;align-items:center;gap:6px;">
-            <button type="button" class="btn-dec" style="padding:2px 8px;">-</button>
-            <input type="number" class="qty-input" min="0" value="${state.qty}" style="width:64px;">
-            <button type="button" class="btn-inc" style="padding:2px 8px;">+</button>
+            <button type="button" class="btn-dec" style="padding:2px 8px;" ${decDisabled}>-</button>
+            <input type="number" class="qty-input" min="0" value="${state.qty}" style="width:64px;" ${inputDisabled}>
+            <button type="button" class="btn-inc" style="padding:2px 8px;" ${incDisabled}>+</button>
           </div>
         </td>
         <td class="row-total">${total.toLocaleString()}</td>
@@ -102,6 +135,7 @@ function display_products(products_to_display) {
 
   refreshSummary();
 }
+
 
 // === 篩選（修正 push 的目標） ===
 function apply_filter(products_to_filter) {
@@ -170,10 +204,20 @@ function apply_filter(products_to_filter) {
     // 列 checkbox
     if (e.target.classList.contains('row-check')) {
       st.checked = e.target.checked;
+      const input = tr.querySelector('.qty-input');
+      if (st.checked) {
+        if (st.qty <= 0) st.qty = 1;   // 勾選後 0 → 1
+      } else {
+        st.qty = 0;                    // 取消勾選歸 0
+      }
+      input.value = st.qty;
       rowState.set(key, st);
+      updateRowTotal(tr);
+      syncRowUI(tr, st);
       refreshSummary();
       return;
     }
+
 
     // 減少數量
     if (e.target.classList.contains('btn-dec')) {
@@ -189,6 +233,7 @@ function apply_filter(products_to_filter) {
       rowState.set(key, st);
       updateRowTotal(tr);
       refreshSummary();
+      syncRowUI(tr, st);
       return;
     }
 
@@ -205,6 +250,7 @@ function apply_filter(products_to_filter) {
       rowState.set(key, st);
       updateRowTotal(tr);
       refreshSummary();
+      syncRowUI(tr, st);
       return;
     }
   });
@@ -226,6 +272,7 @@ function apply_filter(products_to_filter) {
     rowState.set(key, st);
     updateRowTotal(tr);
     refreshSummary();
+    syncRowUI(tr, st);
   });
 })();
 
@@ -302,18 +349,17 @@ async function handleLogin(event) {
   // 先把使用者名稱記起來供前端顯示
   if (username) localStorage.setItem('username', username);
 
-  const response = await fetch('/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
+const response = await fetch('/page_login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ username, password })
+});
+if (response.ok) {
+  location.href = '/';  // 登入成功回首頁
+} else {
+  alert('登入失敗');
+}
 
-  // 依你後端邏輯處理導向
-  if (response.ok) {
-    // location.href = '/'; // 例如登入成功返回首頁
-  } else {
-    alert('登入失敗');
-  }
 }
 
 // === 首次渲染 ===
