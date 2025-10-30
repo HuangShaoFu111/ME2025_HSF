@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>選物介面</title>
     <!--<script src="../static/script.js"></script>-->
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
 <body>
     <!-- 導行列：顯示目前登入使用者 -->
@@ -64,6 +64,6 @@
         </table>
       </div>
     <!-- TODO:[HTML-WritingPart End] -->
-    <script src="../static/script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

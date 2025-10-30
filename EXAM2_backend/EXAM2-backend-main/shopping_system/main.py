@@ -20,17 +20,47 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# --- 檢查/建立 users 表，username 當主鍵 ---
+def ensure_user_table():
+    with get_db_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users(
+                username TEXT PRIMARY KEY,
+                password TEXT NOT NULL,
+                email    TEXT NOT NULL
+            )
+        """)
+        conn.commit()
+
+def log_db_schema():
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name")
+        rows = cur.fetchall()
+        print("=== DB PATH ===", DB_PATH)
+        print("=== TABLES ===")
+        for r in rows:
+            print(f"{r['name']}: {r['sql']}")
+            cur.execute(f"PRAGMA table_info({r['name']})")
+            cols = cur.fetchall()
+            print("  -> columns:", [(c[1], c[2]) for c in cols])  # (name, type)
+
 # 補齊空缺程式碼
+
+
+PW_HAS_UPPER = re.compile(r'[A-Z]')
+PW_HAS_LOWER = re.compile(r'[a-z]')
 
 @app.route('/page_register', methods=['GET', 'POST'], endpoint='register')
 def page_register():
-
+    ensure_user_table()   
     if request.method == 'POST':
         data = request.get_json() if request.is_json else request.form
         username = (data.get('username') or '').strip()
         password = (data.get('password') or '').strip()
         email    = (data.get('email') or '').strip()
-        # 基本檢查
+
+        # ---- 規則檢查 ----
         if not username or not password or not email:
             msg = {"status": "error", "message": "請完整輸入帳號、密碼、信箱"}
             if request.is_json: return jsonify(msg), 400
@@ -41,55 +71,56 @@ def page_register():
             if request.is_json: return jsonify(msg), 400
             flash(msg["message"]); return redirect(url_for('register'))
 
-        if len(password) < 8:
-            msg = {"status": "error", "message": "密碼至少 8 碼"}
+        if len(password) < 8 or not PW_HAS_UPPER.search(password) or not PW_HAS_LOWER.search(password):
+            # 至少 8 碼 + 同時含大小寫
+            msg = {"status": "error", "message": "密碼須至少 8 碼且同時包含英文大小寫，請重新輸入"}
             if request.is_json: return jsonify(msg), 400
             flash(msg["message"]); return redirect(url_for('register'))
 
-        # 寫入 DB
-        conn = get_db_connection()
-        if conn is None:
-            msg = {"status": "error", "message": "資料庫連線失敗"}
-            if request.is_json: return jsonify(msg), 500
-            flash(msg["message"]); return redirect(url_for('register'))
-
+        # ---- DB 寫入/更新 ----
         try:
             with get_db_connection() as conn:
                 cur = conn.cursor()
-                # 檢查重複
-                cur.execute("SELECT 1 FROM users WHERE username=? OR email=?", (username, email))
-                if cur.fetchone():
+                # 以「帳號」為主鍵判斷是否存在
+                cur.execute("SELECT 1 FROM users WHERE username=?", (username,))
+                exists = cur.fetchone() is not None
+
+                if exists:
+                    # 帳號存在 → 覆寫密碼或信箱
+                    cur.execute(
+                        "UPDATE users SET password=?, email=? WHERE username=?",
+                        (password, email, username)
+                    )
+                    conn.commit()
                     if request.is_json:
-                        return jsonify({"status":"error","message":"此名稱或信箱已被使用"}), 400
-                    flash("此名稱或信箱已被使用")
-                    return redirect(url_for('register'))
-
-                # ★ 只插入 3 欄（users 就這 3 欄）
-                cur.execute(
-                    "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
-                    (username, password, email)
-                )
-                conn.commit()  # 保險起見保留明確 commit
-                app.logger.info(f"Register OK -> {username} -> DB: {DB_PATH}")
-
+                        return jsonify({"status": "updated", "message": "帳號已存在，成功修改密碼或信箱"}), 200
+                    flash("帳號已存在，成功修改密碼或信箱"); return redirect(url_for('page_login'))
+                else:
+                    # 新帳號 → 直接新增（users 表三欄）
+                    cur.execute(
+                        "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
+                        (username, password, email)
+                    )
+                    conn.commit()
+                    if request.is_json:
+                        return jsonify({"status": "success", "message": "註冊成功"}), 200
+                    return redirect(url_for('page_login'))
         except sqlite3.Error as e:
             app.logger.exception(f"Register failed: {e}")
             if request.is_json:
                 return jsonify({"status":"error","message":"註冊失敗"}), 500
-            flash("註冊失敗")
-            return redirect(url_for('register'))
-
-        # 成功導回登入頁（名稱依你的登入路由）
-        if request.is_json:
-            return jsonify({"status":"success","message":"註冊成功"}), 200
-        return redirect(url_for('page_login'))
+            flash("註冊失敗"); return redirect(url_for('register'))
 
     return render_template('page_register.html')
 
 
 
+
 def login_user(username, password):
+    ensure_user_table()  
     conn = get_db_connection()
+    ...
+
     if conn is not None:
         try:
             cursor = conn.cursor()
@@ -135,9 +166,56 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('page_login'))
 
+# 建表（若無）: orders(product, price, number, total, date, time)
+def ensure_order_table():
+    with get_db_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS shop_list_table(
+                Product TEXT PRIMARY KEY,
+                Price   NUMERIC,
+                Number  NUMERIC,
+                "Total Price" NUMERIC,
+                Date    TEXT,
+                Time    TEXT
+            )
+        """)
+        conn.commit()
+
+@app.route('/order', methods=['POST'])
+def api_order():
+    try:
+        payload = request.get_json(force=True)
+        items = payload.get('items', [])
+        if not items:
+            return jsonify({"status":"error","message":"無訂單項目"}), 400
+
+        ensure_order_table()
+        now = datetime.now()
+        d = now.strftime("%Y-%m-%d")
+        t = now.strftime("%H:%M")
+
+        with get_db_connection() as conn:
+            cur = conn.cursor()
+            for it in items:
+                cur.execute(
+                    'INSERT OR REPLACE INTO shop_list_table'
+                    ' (Product, Price, Number, "Total Price", Date, Time)'
+                    ' VALUES (?, ?, ?, ?, ?, ?)',
+                    (it.get('name',''), int(it.get('price',0)), int(it.get('qty',0)),
+                     int(it.get('total',0)), d, t)
+                )
+            conn.commit()
+        return jsonify({"status":"success"}), 200
+    except Exception as e:
+        app.logger.exception(e)
+        return jsonify({"status":"error","message":"下單失敗"}), 500
+
 
 # 補齊空缺程式碼
 if __name__ == '__main__':
+    ensure_user_table()   
+    log_db_schema()       
     app.run()
+
 
 

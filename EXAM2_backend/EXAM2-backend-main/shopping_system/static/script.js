@@ -315,7 +315,7 @@ function refreshSummary() {
 (function bindOrderButton() {
   const btnOrder = document.getElementById('place-order');
   if (!btnOrder) return;
-  btnOrder.addEventListener('click', () => {
+  btnOrder.addEventListener('click', async () => {
     const tbody = document.querySelector('#products table tbody');
     if (!tbody) return;
 
@@ -329,16 +329,50 @@ function refreshSummary() {
 
       const name = tr.children[2]?.textContent?.trim() || '';
       const price = Number(tr.querySelector('[data-price]')?.dataset?.price || 0);
-
       orderItems.push({ name, price, qty, total: price * qty });
     });
-
     if (!orderItems.length) return;
 
-    console.log('下單內容：', orderItems);
-    alert('下單成功！詳情請見主控台 (Console)。');
+    // 先送到後端存檔
+    const resp = await fetch('/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: orderItems })
+    });
+    const ok = resp.ok;
+
+    // 組合訊息
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth()+1).padStart(2,'0');
+    const dd = String(now.getDate()).padStart(2,'0');
+    const HH = String(now.getHours()).padStart(2,'0');
+    const MM = String(now.getMinutes()).padStart(2,'0');
+    const lines = orderItems.map(it => `${it.name}:  ${it.price} NT/件 x ${it.qty}  共 ${it.total} NT`);
+    const sum = orderItems.reduce((s, it) => s + it.total, 0);
+    const msg = `${yyyy}/${mm}/${dd} ${HH}:${MM}，已成功下單：\n\n${lines.join('\n')}\n\n此單花費總金額：${sum} NT`;
+
+    alert(msg);
+
+    if (ok) {
+      // 清狀態（選配）
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const chk = tr.querySelector('.row-check');
+        const input = tr.querySelector('.qty-input');
+        if (chk) chk.checked = false;
+        if (input) input.value = 0;
+        const key = tr.getAttribute('data-key');
+        if (rowState.has(key)) rowState.set(key, { checked:false, qty:0 });
+        updateRowTotal(tr);
+        syncRowUI(tr, {checked:false});
+      });
+      refreshSummary();
+    } else {
+      alert('下單儲存失敗，請稍後再試');
+    }
   });
 })();
+
 
 // === 登入：儲存使用者名稱到 localStorage，並可在導行列顯示 ===
 async function handleLogin(event) {
@@ -346,21 +380,67 @@ async function handleLogin(event) {
   const username = document.getElementById('username')?.value ?? '';
   const password = document.getElementById('password')?.value ?? '';
 
-  // 先把使用者名稱記起來供前端顯示
-  if (username) localStorage.setItem('username', username);
+  const resp = await fetch('/page_login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await resp.json();
 
-const response = await fetch('/page_login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ username, password })
+  if (data.status === 'success') {
+    if (username) localStorage.setItem('username', username);
+    alert('登入成功');
+    location.href = '/';
+  } else {
+    alert('帳號或密碼錯誤');
+  }
+}
+
+// 註冊頁自動綁定（不改 HTML 也行）
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form[action*="page_register"], form[action*="register"]');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username')?.value.trim();
+    const password = document.getElementById('password')?.value;
+    const email    = document.getElementById('email')?.value.trim();
+
+    // 前端規則檢查（與後端一致）
+    const isGmail = /@gmail\.com$/i.test(email || '');
+    const hasUpper = /[A-Z]/.test(password || '');
+    const hasLower = /[a-z]/.test(password || '');
+    if (!username || !password || !email) {
+      alert('請完整輸入帳號、密碼、信箱'); return;
+    }
+    if (!(password && password.length >= 8 && hasUpper && hasLower)) {
+      alert('密碼必須超過 8 個字元且同時包含英文大小寫，重新輸入'); return;
+    }
+    if (!isGmail) {
+      alert('Email 格式不符，請輸入 XXX@gmail.com'); return;
+    }
+
+    // 送到後端
+    const r = await fetch('/page_register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, email })
+    });
+    const data = await r.json();
+
+    if (data.status === 'success') {
+      alert('註冊成功');
+      location.href = '/page_login';
+    } else if (data.status === 'updated') {
+      alert('帳號已存在，成功修改密碼或信箱');
+      location.href = '/page_login';
+    } else {
+      alert(data.message || '註冊失敗');
+    }
+  });
 });
-if (response.ok) {
-  location.href = '/';  // 登入成功回首頁
-} else {
-  alert('登入失敗');
-}
 
-}
 
 // === 首次渲染 ===
 display_products(products);
