@@ -11,9 +11,11 @@
     <!-- 導行列：顯示目前登入使用者 -->
     <div class="quixnav">
       <div class="quixnav-scroll">
-              <div>👤 使用者：...</strong><!-- 填入空缺 -->
-      <a href="/logout" id="logout-link">登出</a> <!-- 路徑可依後端調整 -->
+        <div>👤 使用者：<strong id="user-display">{{ session.get('username', 'Guest') }}</strong></div>
+        <a href="/logout" id="logout-link">登出</a>
+      </div>
     </div>
+
     <br>
     <div id="filter">
         <h3>條件篩選</h3>
